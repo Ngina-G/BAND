@@ -7,7 +7,7 @@ from django.conf.urls.static import static
 from rest_framework_jwt.views import obtain_jwt_token, refresh_jwt_token
 
 router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+router.register(r'notes', views.NotesViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
