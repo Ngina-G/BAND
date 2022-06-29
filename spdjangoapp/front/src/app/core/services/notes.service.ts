@@ -1,22 +1,22 @@
-// import {Injectable} from '@angular/core';
-// import {HttpClient, HttpHeaders} from '@angular/common/http';
-// import {UserService} from './user.service';
+import {Injectable} from '@angular/core';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {UserService} from './user.service';
  
-// @Injectable()
-// export class BlogPostService {
+@Injectable()
+export class NotesService {
  
-//   constructor(private http: HttpClient, private _userService: UserService) {
-//   }
+  constructor(private http: HttpClient, private _userService: UserService) {
+  }
  
-//   // send a POST request to the API to create a new blog post
-//   create(note, token) {
-//     let httpOptions = {
-//       headers: new HttpHeaders({
-//         'Content-Type': 'application/json',
-//         'Authorization': 'JWT ' + this._userService.token
-//       })
-//     };
-//     return this.http.note('/api/notes', JSON.stringify(note), httpOptions);
-//   }
+  // send a POST request to the API to create a new blog post
+  create(note:any, token:string) {
+    let httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        'Authorization': 'JWT ' + this._userService.token
+      })
+    };
+    return this.http.post('/api/Notes', JSON.stringify(note), httpOptions);
+  }
  
-// }
+}
