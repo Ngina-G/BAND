@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     #installed
     'spdjangoapp',
     'rest_framework',
+    'bootstrap5',
 ]
 
 MIDDLEWARE = [
