@@ -1,8 +1,8 @@
 from django.contrib.auth.models import User, Group
 from rest_framework import serializers
+from .models import Notes
 
-
-class UserSerializer(serializers.HyperlinkedModelSerializer):
+class NotesSerializer(serializers.ModelSerializer):
     class Meta:
-        model = User
-        fields = ['url', 'username', 'email', 'groups']
+        model = Notes
+        fields = ['id', 'title', 'notes']
