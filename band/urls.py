@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 router = routers.DefaultRouter()
-router.register(r'notes', views.NotesViewSet)
+router.register('notes', views.NotesViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
