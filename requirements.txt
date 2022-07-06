@@ -1,7 +1,7 @@
 alembic==1.7.7
 amqp==5.1.1
 appdirs==1.4.3
-apturl==0.5.2
+# apturl==0.5.2
 asgiref==3.5.0
 backports.zoneinfo==0.2.1
 bcrypt==3.1.7
