@@ -1,15 +1,12 @@
 from django.contrib import admin
-from django.urls import include, path
-from rest_framework import routers
-from api import views
+from django.urls import include, re_path
 from django.conf import settings
 from django.conf.urls.static import static
 
-router = routers.DefaultRouter()
-router.register(r'users', views.UserViewSet)
+
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    re_path(r'^admin/', admin.site.urls),
+    re_path(r'', include('users.urls'))
+
 ]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
