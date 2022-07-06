@@ -54,36 +54,36 @@ class LoginView(APIView):
         return response
 
 
-class UserView(APIView):
+# class UserView(APIView):
 
-    def get(self, request):
-        token = request.COOKIES.get('jwt')
+#     def get(self, request):
+#         token = request.COOKIES.get('jwt')
 
-        if not token:
-            raise AuthenticationFailed('Unauthenticated!')
+#         if not token:
+#             raise AuthenticationFailed('Unauthenticated!')
 
-        try:
-            payload = jwt.decode(token, 'secret', algorithms=['HS256'])
-        except jwt.ExpiredSignatureError:
-            raise AuthenticationFailed('Unauthenticated!')
+#         try:
+#             payload = jwt.decode(token, 'secret', algorithms=['HS256'])
+#         except jwt.ExpiredSignatureError:
+#             raise AuthenticationFailed('Unauthenticated!')
 
-        user = User.objects.filter(id=payload['id']).first()
-        serializer = UserSerializer(user)
-        return Response(serializer.data)
-# def serialize_user(user):
-#     return {
-#         "username": user.username,
-#         "email": user.email,
-#     }
+#         user = User.objects.filter(id=payload['id']).first()
+#         serializer = UserSerializer(user)
+#         return Response(serializer.data)
+def serialize_user(user):
+    return {
+        "username": user.username,
+        "email": user.email,
+    }
 
-# @api_view(['GET'])
-# def UserView(request):
-#     user = request.user
-#     if user.is_authenticated:
-#         return Response({
-#             'user_data': serialize_user(user)
-#         })
-#     return Response({})
+@api_view(['GET'])
+def UserView(request):
+    user = request.user
+    if user.is_authenticated:
+        return Response({
+            'user_data': serialize_user(user)
+        })
+    return Response({})
 
 class LogoutView(APIView):
     def post(self, request):
