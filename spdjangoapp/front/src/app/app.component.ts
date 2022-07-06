@@ -8,7 +8,7 @@ import { ApiService } from './api.service';
   providers: [ApiService]
 })
 export class AppComponent {
-  notes = [{title: 'test1'}];
+  notes = [{title: 'test1'},{notes:'hi'}];
 
   constructor(private api: ApiService) {
     this.getNotes(); 
