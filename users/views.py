@@ -15,7 +15,7 @@ from rest_framework import permissions
 
 # Create your views here.
 class RegisterView(CreateAPIView):
-        model = User()
+        model = User.objects.all()
         permission_classes = [permissions.AllowAny]
         serializer_class = UserSerializer
 

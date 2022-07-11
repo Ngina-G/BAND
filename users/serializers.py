@@ -1,15 +1,19 @@
+import email
 from rest_framework import serializers
 from sqlalchemy import null
 from .models import User,Profile
+from rest_framework.validators import UniqueValidator
+
 
 class ProfileSerializer(serializers.ModelSerializer):
     username = serializers.CharField(source='user.username')
+    email = serializers.CharField(source='user.email')
     bio = serializers.CharField(allow_blank=True, required=False)
     image = serializers.SerializerMethodField()
 
     class Meta:
         model = Profile
-        fields = ('username', 'bio', 'image',)
+        fields = ('username', 'bio', 'image','email',)
         read_only_fields = ('username',)
 
     def get_image(self, obj):
@@ -26,6 +30,13 @@ class UserSerializer(serializers.ModelSerializer):
     )
     bio = serializers.CharField(source='profile.bio', read_only=True)
     image = serializers.CharField(source='profile.image', read_only=True)
+
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'password','bio','image',]
+        extra_kwargs = {
+            'password': {'write_only': True}
+        }
     def create(self, validated_data):
         user = User.objects.create(
             username=validated_data['username'],
@@ -34,12 +45,6 @@ class UserSerializer(serializers.ModelSerializer):
         user.set_password(validated_data['password'])
         user.save()
         return user
-    class Meta:
-        model = User
-        fields = ['id', 'username', 'email', 'password','bio','image']
-        extra_kwargs = {
-            'password': {'write_only': True}
-        }
 def update(self, instance, validated_data):
     """Performs an update on a User."""
 
