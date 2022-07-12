@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.exceptions import AuthenticationFailed
-from .serializers import UserSerializer,ProfileSerializer
-from .models import User,Profile
+from .serializers import UserSerializer,ProfileSerializer,NotesSerializer
+from .models import User,Profile,Notes
 import jwt, datetime
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view
@@ -12,6 +12,10 @@ from rest_framework.generics import RetrieveAPIView,CreateAPIView
 from rest_framework.permissions import AllowAny
 from .exceptions import ProfileDoesNotExist
 from rest_framework import permissions
+from django.views.decorators.csrf import csrf_exempt
+from django.http.response import JsonResponse
+from rest_framework.parsers import JSONParser
+
 
 # Create your views here.
 class RegisterView(CreateAPIView):
@@ -110,3 +114,47 @@ class ProfileRetrieveAPIView(RetrieveAPIView):
         serializer = self.serializer_class(profile)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+
+@csrf_exempt
+def NotesViewSet(request,user_id=0): 
+  if request.method=='GET':
+    queryset = Notes.objects.get(user_id=user_id)
+    serializer_class = NotesSerializer(queryset, many=True)
+    return JsonResponse(serializer_class.data, safe=False)
+  elif request.method=='POST':
+        notes_data=JSONParser().parse(request)  
+        notes_serializer = NotesSerializer(data=notes_data)
+        if notes_serializer.is_valid():
+            notes_serializer.save()
+            return JsonResponse("Added Successfully!!" , safe=False)
+        return JsonResponse("Failed to Add.",safe=False)
+    
+  elif request.method=='PUT':
+        notes_data = JSONParser().parse(request)
+        notes=Notes.objects.get(NoteId=notes_data)
+        notes_serializer=NotesSerializer(notes,data=notes_data)
+        if notes_serializer.is_valid():
+            notes_serializer.save()
+            return JsonResponse("Updated Successfully!!", safe=False)
+        return JsonResponse("Failed to Update.", safe=False)
+@csrf_exempt
+def NotesDelete(request,NoteId):
+  if request.method=='DELETE':
+        notes=Notes.objects.get(NoteId=NoteId)
+        notes.delete()
+        return JsonResponse("Deleted Succeffully!!", safe=False)
+
+@csrf_exempt
+def NotesUpdate(request,NoteId): 
+      try: 
+        notes = Notes.objects.get(NoteId=NoteId) 
+      except Notes.DoesNotExist: 
+        return JsonResponse({'message': 'The Note does not exist'}, status=status.HTTP_404_NOT_FOUND) 
+
+      if request.method=='PUT':
+        notes_data = JSONParser().parse(request)      
+        notes_serializer=NotesSerializer(notes,data=notes_data)
+        if notes_serializer.is_valid():
+            notes_serializer.save()
+            return JsonResponse("Updated Successfully!!",safe=False)
+        return JsonResponse(notes_serializer.errors,status=status.HTTP_404_NOT_FOUND)

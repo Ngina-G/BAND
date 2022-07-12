@@ -1,7 +1,7 @@
 import email
 from rest_framework import serializers
 from sqlalchemy import null
-from .models import User,Profile
+from .models import User,Profile,Notes
 from rest_framework.validators import UniqueValidator
 
 
@@ -77,6 +77,13 @@ def update(self, instance, validated_data):
     instance.profile.save()
 
     return instance
+
+class NotesSerializer(serializers.ModelSerializer):
+    owner_id = serializers.CharField(source='user.id')
+
+    class Meta:
+        model = Notes
+        fields = ['NoteId', 'title', 'notes','owner_id']
 
     
     
