@@ -94,12 +94,12 @@ class LogoutView(APIView):
         }
         return response
 
-class ProfileRetrieveAPIView(RetrieveAPIView):
+class ProfileRetrieveAPIView(APIView):
     permission_classes = (AllowAny,)
     renderer_classes = (ProfileJSONRenderer,)
     serializer_class = ProfileSerializer
 
-    def retrieve(self, request, id, *args, **kwargs):
+    def get(self, request, id, *args, **kwargs):
         # Try to retrieve the requested profile and throw an exception if the
         # profile could not be found.
         try:
@@ -114,11 +114,23 @@ class ProfileRetrieveAPIView(RetrieveAPIView):
         serializer = self.serializer_class(profile)
 
         return Response(serializer.data, status=status.HTTP_200_OK)
+    
+@csrf_exempt
+def ProfileUpdate(request,id):
+    if request.method=='PUT':
+        profile = Profile.objects.get(user_id=id) 
+        profile_data = JSONParser().parse(request)      
+        profile_serializer=ProfileSerializer(profile,data=profile_data)
+        if profile_serializer.is_valid():
+            profile_serializer.save()
+            return JsonResponse("Updated Successfully!!",safe=False)
+        return JsonResponse(profile_serializer.errors,status=status.HTTP_404_NOT_FOUND)
+    
 
 @csrf_exempt
-def NotesViewSet(request,user_id=0): 
+def NotesViewSet(request,owner_id=0): 
   if request.method=='GET':
-    queryset = Notes.objects.get(user_id=user_id)
+    queryset = Notes.objects.filter(owner_id=owner_id).all()
     serializer_class = NotesSerializer(queryset, many=True)
     return JsonResponse(serializer_class.data, safe=False)
   elif request.method=='POST':
@@ -158,3 +170,13 @@ def NotesUpdate(request,NoteId):
             notes_serializer.save()
             return JsonResponse("Updated Successfully!!",safe=False)
         return JsonResponse(notes_serializer.errors,status=status.HTTP_404_NOT_FOUND)
+
+    # @csrf_exempt
+    # def NotesAdd(request): 
+    #     if request.method=='POST':
+    #         notes_data=JSONParser().parse(request)  
+    #         notes_serializer = NotesSerializer(data=notes_data)
+    #         if notes_serializer.is_valid(): 
+    #             notes_serializer.save()
+    #             return JsonResponse("Added Successfully!!" , safe=False)
+    #         return JsonResponse("Failed to Add.",safe=False)

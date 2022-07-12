@@ -13,7 +13,7 @@ class ProfileSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ('username', 'bio', 'image','email',)
+        fields = ('username', 'bio', 'image','email','user_id','name')
         read_only_fields = ('username',)
 
     def get_image(self, obj):
@@ -21,6 +21,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             return obj.image
 
         return 'https://static.productionready.io/images/smiley-cyrus.jpg'
+    
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(
@@ -79,11 +80,30 @@ def update(self, instance, validated_data):
     return instance
 
 class NotesSerializer(serializers.ModelSerializer):
-    owner_id = serializers.CharField(source='user.id')
 
     class Meta:
         model = Notes
-        fields = ['NoteId', 'title', 'notes','owner_id']
+        fields = ['NoteId', 'title', 'notes',]
+
+# class UserProfileSerializer(serializers.ModelSerializer):
+#     user = UserSerializer(required=True, many=False)
+
+#     class Meta:
+#         model = Profile
+#         fields = ('premium', 'user', 'games')
+#         read_only_fields = ('premium', )
+
+#     def update(self, instance, validated_data):
+#         user_data = validated_data.pop('user')
+#         game_data = validated_data.pop('games')
+#         username = self.data['user']['username']
+#         user = User.objects.get(username=username)
+#         print user
+#         user_serializer = UserSerializer(data=user_data)
+#         if user_serializer.is_valid():
+#             user_serializer.update(user, user_data)
+#         instance.save()
+#         return instance
 
     
     

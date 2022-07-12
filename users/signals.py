@@ -1,7 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 
-from .models import Profile
+from .models import Profile,Notes
 
 from .models import User
 
@@ -13,3 +13,9 @@ def create_related_profile(sender, instance, created, *args, **kwargs):
     # has a profile.
     if instance and created:
         instance.profile = Profile.objects.create(user=instance)
+    
+
+# @receiver(post_save, sender=Profile)
+# def create_related_notes(sender, instance, created, *args, **kwargs):
+#     if instance and created:
+#         instance.notes = Notes.objects.create(owner=instance)
